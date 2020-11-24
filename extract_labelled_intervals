@@ -1,0 +1,93 @@
+# Yaqian Huang, 11/23/2020, yah101@ucsd.edu
+# modified based on Huiwen Goy, June 2012; huiwen.goy@utoronto.ca
+
+
+form Extract labelled intervals to separate soundfiles
+comment Sound files
+sentence sound_folder C:\Users\Yaqian\Project\Phonetics\phonation\Tritone\recording\egg\test\
+comment Where are the textgrids?
+sentence textgrid_folder C:\Users\Yaqian\Project\Phonetics\phonation\Tritone\recording\egg\test\
+comment Save new sound files to?
+sentence new_folder C:\Users\Yaqian\Project\Phonetics\phonation\Tritone\recording\egg\test\pd\
+endform
+
+Create Strings as file list... list 'textgrid_folder$'*.TextGrid
+number_of_files = Get number of strings
+
+for a from 1 to number_of_files
+
+select Strings list
+current_file$ = Get string... a
+Read from file... 'textgrid_folder$''current_file$'
+
+object_name$ = selected$ ("TextGrid")
+Read from file... 'sound_folder$''object_name$'.wav
+
+select TextGrid 'object_name$'
+number_of_intervals = Get number of intervals... 5
+
+for b from 1 to number_of_intervals
+
+select TextGrid 'object_name$'
+interval_label$ = Get label of interval... 5 b
+
+if interval_label$ <> ""
+
+if index_regex(interval_label$, "(pd|mo)") & !index_regex(interval_label$, "no")
+
+startpoint = Get starting point... 5 b
+endpoint = Get end point... 5 b
+duration = (endpoint - startpoint) * 1000
+		
+select Sound 'object_name$'
+Extract part... startpoint endpoint rectangular 1.0 'no'
+Rename... 'interval_label$'
+extractname$ = selected$ ("Sound")
+
+newfilename$ = "'object_name$'_'extractname$'_'b'"
+Write to WAV file... 'new_folder$'\'newfilename$'.wav
+select Sound 'extractname$'
+Remove
+
+endif
+endif
+
+endfor
+
+select TextGrid 'object_name$'
+number_of_intervals = Get number of intervals... 6
+
+for b from 1 to number_of_intervals
+
+select TextGrid 'object_name$'
+interval_label$ = Get label of interval... 6 b
+
+if interval_label$ <> ""
+
+if index_regex(interval_label$, "fry")
+
+startpoint = Get starting point... 6 b
+endpoint = Get end point... 6 b
+
+select Sound 'object_name$'
+Extract part... startpoint endpoint rectangular 1.0 'no'
+Rename... 'interval_label$'
+extractname$ = selected$ ("Sound")
+
+newfilename$ = "'object_name$'_'extractname$'_'b'"
+Write to WAV file... 'new_folder$'\'newfilename$'.wav
+select Sound 'extractname$'
+Remove
+endif
+endif
+
+endfor
+
+select TextGrid 'object_name$'
+plus Sound 'object_name$'
+Remove
+
+endfor
+
+clearinfo
+print :O)
