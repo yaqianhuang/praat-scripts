@@ -1,5 +1,5 @@
 # praat-scripts
-A repo for putting Praat scripts online
+A repo for putting adapted Praat scripts online
 
 CQ calculation for EGG signal adapted from Milke
 
@@ -9,4 +9,4 @@ Logging pd information (type, context, position)
 
 Time points and amplitude values for PD ratio
 
-Credits to people who created the scripts
+Credits to people who originally created the scripts
